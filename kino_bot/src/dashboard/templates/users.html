@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Users — Kino Bot{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="mb-0">👥 Users <span class="badge bg-secondary">{{ total }}</span></h4>
+</div>
+<div class="stat-card">
+  <table class="table table-dark table-hover table-sm">
+    <thead>
+      <tr><th>ID</th><th>Telegram</th><th>Name</th><th>Lang</th><th>Status</th><th>Searches</th><th>Views</th><th>Warns</th></tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.id }}</td>
+        <td><code>{{ u.telegram_id }}</code>{% if u.username %}<br><small>@{{ u.username }}</small>{% endif %}</td>
+        <td>{{ u.full_name }}</td>
+        <td><span class="badge bg-info text-dark">{{ u.language.value.upper() }}</span></td>
+        <td>
+          <span class="badge {% if u.status.value == 'active' %}bg-success{% elif u.status.value == 'banned' %}bg-danger{% elif u.status.value == 'blocked' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+            {{ u.status.value }}
+          </span>
+        </td>
+        <td>{{ u.total_searches }}</td>
+        <td>{{ u.total_views }}</td>
+        <td>{% if u.warn_count > 0 %}<span class="badge bg-warning text-dark">{{ u.warn_count }}</span>{% else %}0{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <nav>
+    <ul class="pagination pagination-sm">
+      {% if page > 0 %}
+      <li class="page-item"><a class="page-link" href="/dashboard/users?page={{ page-1 }}">«</a></li>
+      {% endif %}
+      <li class="page-item disabled"><a class="page-link">{{ page+1 }} / {{ pages }}</a></li>
+      {% if page+1 < pages %}
+      <li class="page-item"><a class="page-link" href="/dashboard/users?page={{ page+1 }}">»</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+{% endblock %}

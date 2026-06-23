@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Movies — Kino Bot{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="mb-0">🎬 Movies <span class="badge bg-secondary">{{ total }}</span></h4>
+</div>
+<div class="stat-card">
+  <table class="table table-dark table-hover table-sm">
+    <thead>
+      <tr><th>ID</th><th>Code</th><th>Title</th><th>Year</th><th>Rating</th><th>Views</th><th>Active</th></tr>
+    </thead>
+    <tbody>
+      {% for m in movies %}
+      <tr>
+        <td>{{ m.id }}</td>
+        <td><code>{{ m.code }}</code></td>
+        <td>{{ m.title_uz or m.title }}</td>
+        <td>{{ m.year }}</td>
+        <td>⭐ {{ m.rating }}</td>
+        <td>{{ m.view_count }}</td>
+        <td>{% if m.is_active %}<span class="badge bg-success">Yes</span>{% else %}<span class="badge bg-danger">No</span>{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <nav>
+    <ul class="pagination pagination-sm">
+      {% if page > 0 %}
+      <li class="page-item"><a class="page-link" href="/dashboard/movies?page={{ page-1 }}">«</a></li>
+      {% endif %}
+      <li class="page-item disabled"><a class="page-link">{{ page+1 }} / {{ pages }}</a></li>
+      {% if page+1 < pages %}
+      <li class="page-item"><a class="page-link" href="/dashboard/movies?page={{ page+1 }}">»</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+{% endblock %}

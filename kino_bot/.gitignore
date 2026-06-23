@@ -1,7 +1,48 @@
+# Environment
 .env
+*.env.local
+
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Logs
+logs/
+*.log
+
+# IDE
 .idea/
 .vscode/
-*.log
+*.swp
+*.swo
+
+# Alembic
+alembic/versions/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volumes (local override)
+postgres_data/
+redis_data/
