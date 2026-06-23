@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Kino Bot{% endblock %}
+{% block content %}
+<h4 class="mb-4">📊 Overview</h4>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="text-secondary small">Total Movies</div>
+      <div class="number">{{ movie_count }}</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="text-secondary small">Total Users</div>
+      <div class="number">{{ user_count }}</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="text-secondary small">Active Today</div>
+      <div class="number text-success">{{ active_today }}</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card">
+      <div class="text-secondary small">Broadcasts</div>
+      <div class="number text-warning">{{ broadcasts|length }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-6">
+    <div class="stat-card">
+      <h6 class="mb-3">👥 Daily Active Users (7 days)</h6>
+      <canvas id="usersChart" height="120"></canvas>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="stat-card">
+      <h6 class="mb-3">🔍 Daily Searches &amp; Views</h6>
+      <canvas id="searchChart" height="120"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="stat-card">
+  <h6 class="mb-3">📢 Recent Broadcasts</h6>
+  <table class="table table-dark table-sm">
+    <thead><tr><th>ID</th><th>Title</th><th>Status</th><th>Sent</th><th>Failed</th></tr></thead>
+    <tbody>
+      {% for bc in broadcasts %}
+      <tr>
+        <td>{{ bc.id }}</td>
+        <td>{{ bc.title }}</td>
+        <td>
+          <span class="badge {% if bc.status.value == 'completed' %}bg-success{% elif bc.status.value == 'sending' %}bg-warning{% elif bc.status.value == 'failed' %}bg-danger{% else %}bg-secondary{% endif %}">
+            {{ bc.status.value }}
+          </span>
+        </td>
+        <td>{{ bc.sent_count }}</td>
+        <td>{{ bc.failed_count }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="text-center text-secondary">No broadcasts yet</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const labels = {{ chart_labels|safe }};
+const usersData = {{ chart_users|safe }};
+const viewsData = {{ chart_views|safe }};
+const searchesData = {{ chart_searches|safe }};
+
+new Chart(document.getElementById('usersChart'), {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [{
+      label: 'Active Users',
+      data: usersData,
+      borderColor: '#38bdf8',
+      backgroundColor: 'rgba(56,189,248,0.1)',
+      tension: 0.4, fill: true,
+    }]
+  },
+  options: { plugins: { legend: { labels: { color: '#94a3b8' } } }, scales: { x: { ticks: { color: '#94a3b8' } }, y: { ticks: { color: '#94a3b8' } } } }
+});
+
+new Chart(document.getElementById('searchChart'), {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [
+      { label: 'Searches', data: searchesData, backgroundColor: '#818cf8' },
+      { label: 'Views',    data: viewsData,    backgroundColor: '#34d399' },
+    ]
+  },
+  options: { plugins: { legend: { labels: { color: '#94a3b8' } } }, scales: { x: { ticks: { color: '#94a3b8' } }, y: { ticks: { color: '#94a3b8' } } } }
+});
+</script>
+{% endblock %}
